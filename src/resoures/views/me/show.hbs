@@ -1,0 +1,114 @@
+<h1>This is your list</h1>
+<a href ='/me/trash'><h3>Trash</h3></a>
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each notes}}
+    <tr>
+      <th scope="row">{{sum @index 1}}</th>
+      <td><a href ="#" data-toggle="modal" data-target="#display-note{{this._id}}" class ="checkok" data-id="{{this._id}}">{{this.name}}</a></td>
+      <td class ="CheckDeadline">{{this.deadline}}</td>
+      <td><a href ="#" data-toggle="modal" class = "delete" data-target="#check_delete" data-id="{{this._id}}">Delete</a></td>
+      <td>@mdo</td>
+        <div class="modal fade" id="display-note{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h1>{{this.name}}</h1>
+            <br/>
+            <h1>{{this.deadline}}</h1>
+            <br/>
+            <h2>{{this.des}}</h2>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <a href ="/note/{{this._id}}/edit"><button type="button" class="btn btn-primary" >Edit</button></a>
+        </div>
+        </div>
+    </div>
+    </div>
+    </tr>
+    {{/each}}
+  </tbody>
+
+<!-- Modal -->
+<form name = 'delete' method="POST"></form>
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="check_delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Do you want to delete
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id ="Ok_delete">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+        var note_id;
+        var test = $('.checkok');
+        var FormDelete = document.forms['delete'];
+        console.log(FormDelete);
+        $('#check_delete').on('show.bs.modal',function(e){
+          var button = $(e.relatedTarget);
+          console.log(button.data('id'));
+
+          var BtnDelete = $('#Ok_delete');
+          BtnDelete.click(function(e)
+          {
+            FormDelete.action = "/note/delete/" + button.data('id') + "?_method=PATCH";
+            FormDelete.submit();
+          })
+        })
+        var check_deadline = document.querySelectorAll('.CheckDeadline');
+        check_deadline.forEach(function(date){
+          const nowDate = new Date();
+          const temp = date.textContent;
+          const deadDate = new Date(temp);
+          const year = deadDate.getFullYear(); // Lấy năm hiện tại
+          const month = deadDate.getMonth() + 1; // Lấy tháng hiện tại (giá trị từ 0 - 11, nên cộng thêm 1)
+          const day = deadDate.getDate(); // Lấy ngày trong tháng hiện tại
+            //const dayOfWeek = deadDate.getDay(); // Lấy ngày trong tuần (giá trị từ 0 - 6, 0 là Chủ nhật)
+          if(deadDate>nowDate)
+          {
+            date.textContent =`${day}/${month}/${year}` ;
+          }
+          else 
+          {
+            date.classList.add('expired')
+            date.textContent =`${day}/${month}/${year} - Fail`
+          }
+
+        })
+        test.click(function(e){
+            var button = $(e.target);
+            note_id = button.data('id');
+            console.log(note_id)
+            })
+        })
+  </script>

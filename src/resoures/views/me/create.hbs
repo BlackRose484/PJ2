@@ -1,0 +1,15 @@
+<form class ='mt-4' method="POST" action="/note/store">
+  <div class="form-group">
+    <label for="nameTask">Name</label>
+    <input type="text" class="form-control" id="nameTask" name = "name" aria-describedby="emailHelp" placeholder="Enter name of task">
+  </div>
+  <div class="form-group">
+    <label for="deadlineOfTask">Deadline</label>
+    <input type="date" class="form-control" name = "deadline" id="deadlineOfTask" placeholder="Password">
+  </div>
+  <div class="form-group">
+    <label for="DesOfTask">Des</label>
+    <textarea class="form-control" id="DesOfTask" name = "des" rows="3"></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

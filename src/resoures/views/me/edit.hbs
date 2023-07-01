@@ -1,0 +1,15 @@
+<form class ='mt-4' method="POST" action="/note/{{note._id}}?_method=PUT">
+  <div class="form-group">
+    <label for="nameTask">Name</label>
+    <input type="text" class="form-control" id="nameTask" name = "name" value = "{{note.name}}">
+  </div>
+  <div class="form-group">
+    <label for="deadlineOfTask">Deadline</label>
+    <input type="text" class="form-control" name = "deadline" id="deadlineOfTask" value = "{{note.deadline}}">
+  </div>
+  <div class="form-group">
+    <label for="DesOfTask">Des</label>
+    <input class="form-control" value="{{ note.des }}" id="DesOfTask" name="des">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
