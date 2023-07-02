@@ -7,16 +7,17 @@
       <th scope="col">First</th>
       <th scope="col">Last</th>
       <th scope="col">Handle</th>
+      <th scope="col">Done</th>
     </tr>
   </thead>
   <tbody>
     {{#each notes}}
-    <tr>
+    <tr class ="check{{this._id}}">
       <th scope="row">{{sum @index 1}}</th>
-      <td><a href ="#" data-toggle="modal" data-target="#display-note{{this._id}}" class ="checkok" data-id="{{this._id}}">{{this.name}}</a></td>
-      <td class ="CheckDeadline">{{this.deadline}}</td>
-      <td><a href ="#" data-toggle="modal" class = "delete" data-target="#check_delete" data-id="{{this._id}}">Delete</a></td>
-      <td>@mdo</td>
+      <td><a data-toggle="modal" data-target="#display-note{{this._id}}" class ="checkok" data-id="{{this._id}}">{{this.name}}</a></td>
+      <td class ="CheckDeadline" data-id="{{this._id}}">{{this.deadline}}</td>
+      <td><a  data-toggle="modal" class = "delete" data-target="#check_delete" data-id="{{this._id}}">Delete</a></td>
+      <td><input class="form-check-input done{{this._id}}" type="checkbox" id="checkbox" data-id="{{this._id}}" name = "Done[]" {{this.done}}> Done </td>
         <div class="modal fade" id="display-note{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -47,7 +48,7 @@
 <!-- Modal -->
 <form name = 'delete' method="POST"></form>
 <!-- Button trigger modal -->
-
+<form name = 'done' method="POST"></form>
 <!-- Modal -->
 <div class="modal fade" id="check_delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -73,6 +74,8 @@
         var note_id;
         var test = $('.checkok');
         var FormDelete = document.forms['delete'];
+        var FormDone = document.forms['done'];
+        var CheckDone = $('input[name="Done[]"]');
         console.log(FormDelete);
         $('#check_delete').on('show.bs.modal',function(e){
           var button = $(e.relatedTarget);
@@ -87,6 +90,12 @@
         })
         var check_deadline = document.querySelectorAll('.CheckDeadline');
         check_deadline.forEach(function(date){
+          var data_id = date.getAttribute("data-id");
+          var tes = `check${data_id}`
+          var done = `done${data_id}`
+          var changeColor = document.getElementsByClassName(tes);
+          var DisableDone = document.getElementsByClassName(done);
+          console.log(DisableDone);
           const nowDate = new Date();
           const temp = date.textContent;
           const deadDate = new Date(temp);
@@ -94,17 +103,53 @@
           const month = deadDate.getMonth() + 1; // Lấy tháng hiện tại (giá trị từ 0 - 11, nên cộng thêm 1)
           const day = deadDate.getDate(); // Lấy ngày trong tháng hiện tại
             //const dayOfWeek = deadDate.getDay(); // Lấy ngày trong tuần (giá trị từ 0 - 6, 0 là Chủ nhật)
+          
           if(deadDate>nowDate)
           {
             date.textContent =`${day}/${month}/${year}` ;
           }
           else 
           {
-            date.classList.add('expired')
+            changeColor[0].setAttribute('style','color: red')
             date.textContent =`${day}/${month}/${year} - Fail`
+            DisableDone[0].disabled = true;
           }
-
         })
+        // Duyệt qua từng checkbox
+        $('input[type="checkbox"]').each(function() {
+          // Kiểm tra trạng thái chọn của checkbox
+          if ($(this).is(':checked')) {
+            var data_id = $(this).data('id');
+            var hasDone = `check${data_id}`;
+            var changeColor = document.getElementsByClassName(hasDone);
+            changeColor[0].setAttribute('style','color: blue')
+          } else {
+            console.log('Checkbox ' + $(this).attr('id') + ' không được chọn');
+          }
+        });
+
+        CheckDone.on('change', function(e) {
+          e.stopPropagation();
+           var tes = `check${e.target.getAttribute('data-id')}`;
+            var changeColor = document.getElementsByClassName(tes);
+
+            if ($(this).is(':checked')) {
+            console.log('Checkbox ' +e.target.getAttribute('data-id') + ' được chọn');
+            changeColor[0].setAttribute('style','color: blue');
+            FormDone.action = "/note/" + e.target.getAttribute('data-id') +'/done?_method=PATCH';
+            console.log(FormDone.action);
+            FormDone.submit();
+
+          } else{
+            changeColor[0].setAttribute('style','color: black')
+            FormDone.action = "/note/" + e.target.getAttribute('data-id') +'/undone?_method=PATCH';
+            console.log(FormDone.action);
+            FormDone.submit();
+          }
+        });
+
+        
+        
         test.click(function(e){
             var button = $(e.target);
             note_id = button.data('id');

@@ -26,6 +26,14 @@ class NoteController {
         Note.delete({_id:req.params.id})
             .then(()=>res.redirect('/me/list'))
     }
+    done(req,res,next){
+        Note.updateOne({_id:req.params.id},{done:"checked"})
+            .then(()=>res.redirect('back'))
+    }
+    undone(req,res,next){
+        Note.updateOne({_id:req.params.id},{done:"unchecked"})
+            .then(()=>res.redirect('back'))
+    }
 }
 
 module.exports = new NoteController;

@@ -4,7 +4,7 @@ class MeController {
     show(req,res,next){
         Note.find({}).lean()
             .then((notes)=>{
-                notes.forEach((note)=>console.log(note.deadline))
+                notes = notes.sort((a,b)=>a.deadline-b.deadline);
                 res.render('me/show',{ notes })})
             .catch(next)
     }

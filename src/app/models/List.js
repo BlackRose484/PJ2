@@ -9,6 +9,7 @@ const Notes = new Schema(
     name: {type :String},
     deadline: {type: Date},
     des:{type: String},
+    done:{type: String ,default :'unchecked'},
     slug: { type: String, slug: 'name' },
   },
   {
