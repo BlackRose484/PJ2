@@ -5,7 +5,10 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">First</th>
-      <th scope="col">Last</th>
+      <th scope="col">
+        Last
+        {{{sortable 'deadline' _sort}}}
+        </th>
       <th scope="col">Handle</th>
       <th scope="col">Done</th>
     </tr>
@@ -110,9 +113,11 @@
           }
           else 
           {
-            changeColor[0].setAttribute('style','color: red')
+            if(!DisableDone[0].checked)
+            {changeColor[0].setAttribute('style','color: red')
             date.textContent =`${day}/${month}/${year} - Fail`
-            DisableDone[0].disabled = true;
+            DisableDone[0].disabled = true;}
+            else date.textContent =`${day}/${month}/${year}`;
           }
         })
         // Duyệt qua từng checkbox
